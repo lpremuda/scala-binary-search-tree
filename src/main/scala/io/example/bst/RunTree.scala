@@ -28,6 +28,16 @@ object RunTree extends App {
   println("\nReverse traverse myTreeString:")
   Tree.reverseTraverse(myTreeString)
 
+  val myTreeIntDFS: Seq[Int] = Tree.depthFirstSearch(myTreeInt)
+  print("myTreeIntDFS = ")
+  myTreeIntDFS.foreach(x => print(s"$x "))
+  println()
+
+  val myTreeIntBFS: Seq[Int] = Tree.breadthFirstSearch(myTreeInt)
+  print("myTreeIntBFS = ")
+  myTreeIntBFS.foreach(x => print(s"$x "))
+  println()
+
   // Create traverse log
   val myTreeIntLogged = Tree.traverseLog(myTreeInt)
 

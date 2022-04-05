@@ -1,6 +1,8 @@
 package io.example.bst
 
 import scala.annotation.tailrec
+import scala.collection.mutable
+import scala.collection.mutable.Queue
 import scala.math.Ordered.orderingToOrdered
 
 sealed trait Tree[+A] {
@@ -96,6 +98,39 @@ object Tree {
     }
 
     recursiveBuild(elems, Branch(elem, Empty, Empty))
+  }
+
+  def depthFirstSearch[A](tree: Tree[A], seq: Seq[A] = Seq.empty[A]): Seq[A] = {
+    tree match {
+      case Branch(value, left, right) =>
+        val seqLeft: Seq[A] = depthFirstSearch(left, seq :+ value)
+        depthFirstSearch(right, seqLeft)
+      case Leaf(value) => seq :+ value
+      case Empty => seq
+    }
+  }
+
+  def breadthFirstSearch[A](tree: Tree[A]): Seq[A] = {
+    // Initialize buffer to be empty
+    val buffer: collection.mutable.ArrayBuffer[A] = collection.mutable.ArrayBuffer[A]()
+
+    // Initialize queue with the input tree
+    val queue: mutable.Queue[Tree[A]] = mutable.Queue(tree)
+
+    while (queue.nonEmpty) {
+      val node: Tree[A] = queue.dequeue
+      node match {
+        case Branch(value, left, right) =>
+          buffer += value
+          queue.enqueue(left)
+          queue.enqueue(right)
+        case Leaf(value) =>
+          buffer += value
+        case Empty => ()
+      }
+    }
+
+    buffer.toSeq
   }
 
   def traverse[A](tree: Tree[A]): Unit = {
