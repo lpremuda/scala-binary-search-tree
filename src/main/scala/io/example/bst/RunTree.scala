@@ -2,47 +2,47 @@ package io.example.bst
 
 object RunTree extends App {
 
-  val myTreeInt: Tree[Int] = Tree(3,7,2,9,1,6,4,10,-2,20,0,100)
-  val myTreeString: Tree[String] = Tree("e","a","p","m","z","t","b","h","s","A","qqq")
+  val bstInt: BST[Int] = BST(3,7,2,9,1,6,4,10,-2,20,0,100)
+  val bstString: BST[String] = BST("e","a","p","m","z","t","b","h","s","A","qqq")
 
   println("Search:")
-  println(myTreeInt.search(9))
-  println(myTreeInt.search(1))
-  println(myTreeInt.search(100))
-  println(myTreeInt.search(5))
+  println(bstInt.search(9))
+  println(bstInt.search(1))
+  println(bstInt.search(100))
+  println(bstInt.search(5))
 
-  println("\nTraverse myTreeInt:")
-  Tree.traverse(myTreeInt)
+  println("\nTraverse bstInt:")
+  BST.traverse(bstInt)
 
-  val myTreeIntAdded = myTreeInt + 8
+  val bstIntAdded = bstInt + 8
 
-  println("\nTraverse myTreeInt (with 8 added):")
-  Tree.traverse(myTreeIntAdded)
+  println("\nTraverse bstInt (with 8 added):")
+  BST.traverse(bstIntAdded)
 
-  println("\nReverse traverse myTreeInt:")
-  Tree.reverseTraverse(myTreeInt)
+  println("\nReverse traverse bstInt:")
+  BST.reverseTraverse(bstInt)
 
-  println("\nTraverse myTreeString:")
-  Tree.traverse(myTreeString)
+  println("\nTraverse bstString:")
+  BST.traverse(bstString)
 
-  println("\nReverse traverse myTreeString:")
-  Tree.reverseTraverse(myTreeString)
+  println("\nReverse traverse bstString:")
+  BST.reverseTraverse(bstString)
 
-  val myTreeIntDFS: Seq[Int] = Tree.depthFirstSearch(myTreeInt)
-  print("myTreeIntDFS = ")
-  myTreeIntDFS.foreach(x => print(s"$x "))
+  val bstIntDFS: Seq[Int] = BST.depthFirstSearch(bstInt)
+  print("bstIntDFS = ")
+  bstIntDFS.foreach(x => print(s"$x "))
   println()
 
-  val myTreeIntBFS: Seq[Int] = Tree.breadthFirstSearch(myTreeInt)
-  print("myTreeIntBFS = ")
-  myTreeIntBFS.foreach(x => print(s"$x "))
+  val bstIntBFS: Seq[Int] = BST.breadthFirstSearch(bstInt)
+  print("bstIntBFS = ")
+  bstIntBFS.foreach(x => print(s"$x "))
   println()
 
   // Create traverse log
-  val myTreeIntLogged = Tree.traverseLog(myTreeInt)
+  val bstIntLogged = BST.traverseLog(bstInt)
 
   // Print the traverse log
-  Tree.prettyPrintTraverseLog(myTreeIntLogged)
+  BST.prettyPrintTraverseLog(bstIntLogged)
 
   /*
 

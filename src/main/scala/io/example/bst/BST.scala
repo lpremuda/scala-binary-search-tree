@@ -2,18 +2,17 @@ package io.example.bst
 
 import scala.annotation.tailrec
 import scala.collection.mutable
-import scala.collection.mutable.Queue
 import scala.math.Ordered.orderingToOrdered
 
-sealed trait Tree[+A] {
-  def +[B >: A : Ordering](elem: B): Tree[B]
+sealed trait BST[+A] {
+  def +[B >: A : Ordering](elem: B): BST[B]
   def search[B >: A : Ordering](searchValue: B): Option[B]
 
   // toString not all the way fully working yet. It is a complicated algorithm to output the tree in a nice way
   def toString: String
 }
 
-case class Branch[+A](value: A, l: Tree[A], r: Tree[A]) extends Tree[A] {
+case class Branch[+A](value: A, l: BST[A], r: BST[A]) extends BST[A] {
 
   /*
 
@@ -27,14 +26,14 @@ case class Branch[+A](value: A, l: Tree[A], r: Tree[A]) extends Tree[A] {
     def <  (that: A): Boolean = (this compare that) <  0
 
   Verbose definition:
-  def +[B >: A](elem: B)(implicit ord: Ordering[B]): Tree[B] = {
+  def +[B >: A](elem: B)(implicit ord: Ordering[B]): BST[B] = {
     if (orderingToOrdered[B](elem)(ord).<(value)) this
     else this
   }
 
  */
 
-  def +[B >: A : Ordering](elem: B): Tree[B] = {
+  def +[B >: A : Ordering](elem: B): BST[B] = {
     if (elem < value) {
       l match {
         case Empty => this.copy(l = Leaf(elem))
@@ -68,8 +67,8 @@ case class Branch[+A](value: A, l: Tree[A], r: Tree[A]) extends Tree[A] {
   }
 }
 
-case class Leaf[+A](value: A) extends Tree[A] {
-  def +[B >: A : Ordering](elem: B): Tree[B] =
+case class Leaf[+A](value: A) extends BST[A] {
+  def +[B >: A : Ordering](elem: B): BST[B] =
     if (elem < value) Branch(value, Leaf(elem), Empty)
     else Branch(value, Empty, Leaf(elem))
 
@@ -81,18 +80,18 @@ case class Leaf[+A](value: A) extends Tree[A] {
   override def toString: String = value.toString
 }
 
-case object Empty extends Tree[Nothing] {
-  def +[B >: Nothing : Ordering](elem: B): Tree[B] = throw new NoSuchElementException("Empty.add")
+case object Empty extends BST[Nothing] {
+  def +[B >: Nothing : Ordering](elem: B): BST[B] = throw new NoSuchElementException("Empty.add")
   def search[B >: Nothing : Ordering](searchValue: B): Option[B] = None
 
   override def toString: String = ""
 }
 
-object Tree {
+object BST {
 
-  def apply[A: Ordering](elem: A, elems: A*): Tree[A] = {
+  def apply[A: Ordering](elem: A, elems: A*): BST[A] = {
     @tailrec
-    def recursiveBuild(elems: Seq[A], tree: Tree[A]): Tree[A] = {
+    def recursiveBuild(elems: Seq[A], tree: BST[A]): BST[A] = {
       if (elems.isEmpty) tree
       else recursiveBuild(elems.tail, tree + elems.head)
     }
@@ -100,7 +99,7 @@ object Tree {
     recursiveBuild(elems, Branch(elem, Empty, Empty))
   }
 
-  def depthFirstSearch[A](tree: Tree[A], seq: Seq[A] = Seq.empty[A]): Seq[A] = {
+  def depthFirstSearch[A](tree: BST[A], seq: Seq[A] = Seq.empty[A]): Seq[A] = {
     tree match {
       case Branch(value, left, right) =>
         val seqLeft: Seq[A] = depthFirstSearch(left, seq :+ value)
@@ -110,15 +109,15 @@ object Tree {
     }
   }
 
-  def breadthFirstSearch[A](tree: Tree[A]): Seq[A] = {
+  def breadthFirstSearch[A](tree: BST[A]): Seq[A] = {
     // Initialize buffer to be empty
     val buffer: collection.mutable.ArrayBuffer[A] = collection.mutable.ArrayBuffer[A]()
 
     // Initialize queue with the input tree
-    val queue: mutable.Queue[Tree[A]] = mutable.Queue(tree)
+    val queue: mutable.Queue[BST[A]] = mutable.Queue(tree)
 
     while (queue.nonEmpty) {
-      val node: Tree[A] = queue.dequeue
+      val node: BST[A] = queue.dequeue
       node match {
         case Branch(value, left, right) =>
           buffer += value
@@ -133,10 +132,10 @@ object Tree {
     buffer.toSeq
   }
 
-  def traverse[A](tree: Tree[A]): Unit = {
-    def traverseRec(tree: Tree[A]): Unit = {
+  def traverse[A](tree: BST[A]): Unit = {
+    def traverseRec(tree: BST[A]): Unit = {
       tree match {
-        case Branch(value, l: Tree[A], r: Tree[A]) =>
+        case Branch(value, l: BST[A], r: BST[A]) =>
           traverseRec(l)
           printElement(value)
           traverseRec(r)
@@ -149,10 +148,10 @@ object Tree {
     println()
   }
 
-  def reverseTraverse[A](tree: Tree[A]): Unit = {
-    def reverseTraverseRec(tree: Tree[A]): Unit = {
+  def reverseTraverse[A](tree: BST[A]): Unit = {
+    def reverseTraverseRec(tree: BST[A]): Unit = {
       tree match {
-        case Branch(value, l: Tree[A], r: Tree[A]) =>
+        case Branch(value, l: BST[A], r: BST[A]) =>
           reverseTraverseRec(r)
           printElement(value)
           reverseTraverseRec(l)
@@ -183,8 +182,8 @@ object Tree {
     constructSeqTR(Seq.fill(numOfLevels)(Seq.empty[Option[A]]), numOfLevels)
   }
 
-  def traverseLog[A](tree: Tree[A]): Seq[Seq[Option[A]]] = {
-    def traverseLogRec[A](tree: Tree[A], seq: Seq[Seq[Option[A]]], x: Int = 0, y: Int = 0, leftMove: Boolean = true): Seq[Seq[Option[A]]] = {
+  def traverseLog[A](tree: BST[A]): Seq[Seq[Option[A]]] = {
+    def traverseLogRec[A](tree: BST[A], seq: Seq[Seq[Option[A]]], x: Int = 0, y: Int = 0, leftMove: Boolean = true): Seq[Seq[Option[A]]] = {
       /*
         Setting curX:
                                     0
@@ -203,7 +202,7 @@ object Tree {
       val curY = y
 
       tree match {
-        case Branch(value, l: Tree[A], r: Tree[A]) => {
+        case Branch(value, l: BST[A], r: BST[A]) => {
           val seq0 = seq.updated(curY, seq(curY).updated(curX, Some(value)))
           val seq1 = traverseLogRec(l, seq0, curX, curY + 1, leftMove = true)
           val seq2 = traverseLogRec(r, seq1, curX, curY + 1, leftMove = false)
