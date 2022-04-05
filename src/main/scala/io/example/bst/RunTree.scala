@@ -4,6 +4,8 @@ object RunTree extends App {
 
   val bstInt: BST[Int] = BST(3,7,2,9,1,6,4,10,-2,20,0,100)
   val bstString: BST[String] = BST("e","a","p","m","z","t","b","h","s","A","qqq")
+  val bstInt2: BST[Int] = BST(15,8,22,10,18,5,6,2,3,12,11)
+  val jumbledTree: BST[Int] = Branch(5, Branch(11, Leaf(4), Leaf(15)), Branch(3, Leaf(2), Leaf(12)))
 
   println("Search:")
   println(bstInt.search(9))
@@ -38,12 +40,23 @@ object RunTree extends App {
   bstIntBFS.foreach(x => print(s"$x "))
   println()
 
+  val bstIntMaxRoot: Int = BST.findMaxRoot(bstInt)
+  println(s"bstIntMaxRoot = $bstIntMaxRoot")
+
+  val bstInt2MaxRoot: Int = BST.findMaxRoot(bstInt2)
+  println(s"bstIntMaxRoot = $bstInt2MaxRoot")
+
+  println(s"Min val of jumbledTree: ${BST.findMinVal(jumbledTree)}")
+
   // Create traverse log
   val bstIntLogged = BST.traverseLog(bstInt)
 
   // Print the traverse log
   BST.prettyPrintTraverseLog(bstIntLogged)
 
+  BST.prettyPrintTraverseLog(BST.traverseLog(bstInt2))
+
+  BST.prettyPrintTraverseLog(BST.traverseLog(jumbledTree))
   /*
 
     Branch(

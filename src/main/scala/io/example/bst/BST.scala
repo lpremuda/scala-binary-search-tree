@@ -8,7 +8,7 @@ sealed trait BST[+A] {
   def +[B >: A : Ordering](elem: B): BST[B]
   def search[B >: A : Ordering](searchValue: B): Option[B]
 
-  // toString not all the way fully working yet. It is a complicated algorithm to output the tree in a nice way
+  // toString not all the way fully working yet. It is a complicated algorithm to output the bst in a nice way
   def toString: String
 }
 
@@ -109,12 +109,12 @@ object BST {
     }
   }
 
-  def breadthFirstSearch[A](tree: BST[A]): Seq[A] = {
+  def breadthFirstSearch[A](bst: BST[A]): Seq[A] = {
     // Initialize buffer to be empty
     val buffer: collection.mutable.ArrayBuffer[A] = collection.mutable.ArrayBuffer[A]()
 
-    // Initialize queue with the input tree
-    val queue: mutable.Queue[BST[A]] = mutable.Queue(tree)
+    // Initialize queue with the input bst
+    val queue: mutable.Queue[BST[A]] = mutable.Queue(bst)
 
     while (queue.nonEmpty) {
       val node: BST[A] = queue.dequeue
@@ -130,6 +130,30 @@ object BST {
     }
 
     buffer.toSeq
+  }
+
+  def findMaxRoot(bst: BST[Int]): Int = {
+    bst match {
+      case Branch(value: Int, left, right) =>
+        value + math.max(findMaxRoot(left), findMaxRoot(right))
+      case Leaf(value) =>
+        value
+      case Empty =>
+        0
+    }
+  }
+
+  def findMinVal(bst: BST[Int]): Int = {
+    bst match {
+      case Branch(value: Int, left, right) =>
+        val nodesMinimum: Int = math.min(findMinVal(left), findMinVal(right))
+        math.min(value, nodesMinimum)
+      case Leaf(value) =>
+        value
+      case Empty =>
+        // Essentially infinity
+        Int.MaxValue
+    }
   }
 
   def traverse[A](tree: BST[A]): Unit = {
